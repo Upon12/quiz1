@@ -25,11 +25,11 @@ app.config['SECRET_KEY'] = 'wzg'
 def part10():
 	cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:2server2.database.windows.net,1433;Database=samp;Uid=admin1;Pwd={wangpeng131488.};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 	cursor = cnxn.cursor()
-	cursor.execute("select count(*) as quakes from nquakes")
+	cursor.execute("select count(*) as quakes from nquakes1")
 	quake = cursor.fetchone() #row[0],
-	cursor.execute("SELECT * from nquakes where mag = (SELECT MAX(mag) from nquakes)")
+	cursor.execute("SELECT * from nquakes1 where mag = (SELECT MAX(mag) from nquakes1)")
 	large = cursor.fetchone() #row[0],
-	cursor.execute("SELECT * from nquakes where mag = (SELECT min(mag) from nquakes)")
+	cursor.execute("SELECT * from nquakes1 where mag = (SELECT min(mag) from nquakes1)")
 	small = cursor.fetchone() #row[0],
 	q=''+str(quake[0])
 	l=''+str(large[7])+'          '+str(large[6])
@@ -50,9 +50,9 @@ def part11():
 		dat=[]
 		for i in range(n):
 			high=low+(high-low)/i
-			cursor.execute("select count(*) as quakes from nquakes where mag >=? and mag <?",low,high)
+			cursor.execute("select count(*) as quakes from nquakes1 where mag >=? and mag <?",low,high)
 			r = cursor.fetchone()
-			cursor.execute("select * as quakes from nquakes where mag=(select max(mag) from  nquakes where mag >=? and mag <? ) ",low,high)
+			cursor.execute("select * as quakes from nquakes1 where mag=(select max(mag) from  nquakes1 where mag >=? and mag <? ) ",low,high)
 			row = cursor.fetchone()
 			d={
 				'patten':i+1,
@@ -72,7 +72,7 @@ def part12():
 		name = request.form["name"]
 		cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:2server2.database.windows.net,1433;Database=samp;Uid=admin1;Pwd={wangpeng131488.};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 		cursor = cnxn.cursor()
-		cursor.execute("select Name,Keywords,Picture from quiz0data where Name=?",name)
+		cursor.execute("select Name,Keywords,Picture from [dbo.data_1] where Name=?",name)
 		row = cursor.fetchone()
 		if row is not None:
 			return render_template('part12.html',part12_active = "active",data = {
