@@ -23,7 +23,7 @@ app.config['SECRET_KEY'] = 'wzg'
 # ROUTES!
 @app.route('/')
 def part10():
-	cnxn = pyodbc.connect('Driver={ODBC Driver 18 for SQL Server};Server=tcp:wzgserver.database.windows.net,1433;Database=wzgdb;Uid=wzg;Pwd={zg123456!};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+	cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:2server2.database.windows.net,1433;Database=samp;Uid=admin1;Pwd={wangpeng131488.};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 	cursor = cnxn.cursor()
 	cursor.execute("select count(*) as quakes from nquakes")
 	quake = cursor.fetchone() #row[0],
@@ -45,7 +45,7 @@ def part11():
 		low = request.form["low"]
 		high = request.form["high"]
 		n = request.form["n"]
-		cnxn = pyodbc.connect('Driver={ODBC Driver 18 for SQL Server};Server=tcp:wzgserver.database.windows.net,1433;Database=wzgdb;Uid=wzg;Pwd={zg123456!};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+		cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:2server2.database.windows.net,1433;Database=samp;Uid=admin1;Pwd={wangpeng131488.};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 		cursor = cnxn.cursor()
 		dat=[]
 		for i in range(n):
@@ -70,7 +70,7 @@ def part12():
 		return render_template('part12.html',part12_active = "active",title="Part 12")
 	if request.method=='POST':
 		name = request.form["name"]
-		cnxn = pyodbc.connect('Driver={ODBC Driver 18 for SQL Server};Server=tcp:wzgserver.database.windows.net,1433;Database=wzgdb;Uid=wzg;Pwd={zg123456!};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+		cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:2server2.database.windows.net,1433;Database=samp;Uid=admin1;Pwd={wangpeng131488.};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 		cursor = cnxn.cursor()
 		cursor.execute("select Name,Keywords,Picture from quiz0data where Name=?",name)
 		row = cursor.fetchone()
