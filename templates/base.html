@@ -1,0 +1,46 @@
+{% extends 'bootstrap/base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="static/style.css">
+{% endblock %}
+
+{% block title %}
+quiz 0 | {{title}}
+{% endblock %}
+
+{% block navbar %}
+
+<div class="container">
+    <div>
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <!-- <img src="../static/uta.jpg" class="bi me-2" style="width:40px; height:32px"> -->
+            <span class="fs-4">Quiz 0 | <b>Wang Zhigang</b> | 92158</span>
+        </a>
+    </header>  
+    </div>
+
+        <li class="nav-item"><a href="{{url_for('part10')}}" class="nav-link {{part10_active}}"
+                aria-current="page">part10
+            </a>
+        </li>
+
+
+        
+        <li class="nav-item"><a href="{{url_for('part11')}}" class="nav-link {{part11_active}}">part11</a></li>
+
+
+        <li class="nav-item"><a href="{{url_for('part12')}}" class="nav-link {{part12_active}}">part12</a></li>
+
+</div>
+
+
+{% endblock %}
+
+{% block content %}
+{% block app_content %}
+{% endblock %}
+</div>
+{% endblock %}

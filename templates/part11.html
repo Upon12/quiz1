@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<div
+    style="width: 100%; display: flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+    <form action="" method="post" class="form" role="form"
+        style="display: flex; flex-direction:row; width: 60%; margin-bottom: 40px;">
+        <input id="csrf_token" name="csrf_token" type="hidden"
+            value="ImFkNmRmMzM1ZWY3NWYwZmEwNjBiNmJlNGVmMTQxZDUwYmY4Njk1MDYi.Y0v8NQ.CbnYOg6BX77j8-93gBFmCcuw5RY">
+        <input  id="low" name="low" placeholder="low " type="int"
+            value="" style="margin-left: 20px;">
+            <input  id="high" name="high" placeholder="high " type="int"
+            value="" style="margin-left: 20px;">
+            <input  id="n" name="n" placeholder="n" type="int"
+            value="" style="margin-left: 20px;">
+        <input id="submit" name="submit" type="submit" value="Search">
+    </form>
+    {% if data %}
+    <table class="table table-striped table-bordered table-hover table-condensed" style="width: 60%;margin:auto">
+        <tr>
+            <th>patten</th>
+            <th>quakes</th>
+            <th>time</th>
+            <th>location</th>
+        </tr>
+        {% for d in data %}
+        <tr>
+            <td>{{ d.patten }}</td>
+            <td>{{ d.quakes }}</td>
+            <td>{{ d.time }}</td>
+            <td>{{ d.location }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+{% endblock %}
