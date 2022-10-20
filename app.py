@@ -18,11 +18,11 @@ from PIL import Image
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
-app.config['SECRET_KEY'] = '0626fuyi'
-server = 'notminusone.database.windows.net'
-database = 'notminusoneDatabase'
-username = 'not-1'
-password = '0626Fuyi' 
+app.config['SECRET_KEY'] = 'wangpeng131488.'
+server = '2server2.database.windows.net'
+database = 'samp'
+username = 'admin1'
+password = 'wangpeng131488.' 
 driver= '{ODBC Driver 17 for SQL Server}'
 # 
 # ROUTES!
@@ -30,13 +30,13 @@ driver= '{ODBC Driver 17 for SQL Server}'
 
 @app.route('/')
 def part10():
-	cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:notminusone.database.windows.net,1433;Database=notminusoneDatabase;Uid=not-1;Pwd={0626Fuyi};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+	cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:2server2.database.windows.net,1433;Database=samp;Uid=admin1;Pwd={wangpeng131488.};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 	cursor = cnxn.cursor()
-	cursor.execute("select count(*) from [dbo].[nquakes2]")
+	cursor.execute("select count(*) from [dbo].[nquakes1]")
 	row = cursor.fetchval()
-	cursor.execute("select id,place from [dbo].[nquakes2] where mag=(select max(mag) from [dbo].[nquakes2])")
+	cursor.execute("select id,place from [dbo].[nquakes1] where mag=(select max(mag) from [dbo].[nquakes1])")
 	row1 = cursor.fetchone()
-	cursor.execute("select id,place from [dbo].[nquakes2] where mag=(select min(mag) from [dbo].[nquakes2])")
+	cursor.execute("select id,place from [dbo].[nquakes1] where mag=(select min(mag) from [dbo].[nquakes1])")
 	row2 = cursor.fetchone()
 	return render_template('part10.html',sum=row,part10_active="active",title="Part 10",max={
 		'id':row1[0],
@@ -55,16 +55,16 @@ def part11():
 		low = float(request.form["low"])
 		high = float(request.form["high"])
 		N = int(request.form["N"])
-		cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:notminusone.database.windows.net,1433;Database=notminusoneDatabase;Uid=not-1;Pwd={0626Fuyi};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+		cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:2server2.database.windows.net,1433;Database=samp;Uid=admin1;Pwd={wangpeng131488.};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 		cursor = cnxn.cursor()
 		data = []
 		step = (high-low)/N
 		for i in range(N):
-			cursor.execute("select count(*) from nquakes2 where mag>"+str(low + step * i)+ "and mag<"+ str(low + step * (i + 1)))
+			cursor.execute("select count(*) from nquakes1 where mag>"+str(low + step * i)+ "and mag<"+ str(low + step * (i + 1)))
 			num = cursor.fetchval()
-			cursor.execute("select max(mag) from nquakes2 where mag>"+str(low + step * i)+ "and mag<"+ str(low + step * (i + 1)))
+			cursor.execute("select max(mag) from nquakes1 where mag>"+str(low + step * i)+ "and mag<"+ str(low + step * (i + 1)))
 			max = cursor.fetchval()
-			cursor.execute("select time,place from nquakes2 where mag=?",max)
+			cursor.execute("select time,place from nquakes1 where mag=?",max)
 			row = cursor.fetchone()
 			data.append({
 				"num":num,
@@ -90,10 +90,10 @@ def part12():
 		longitude2 = float(request.form["longitude2"])
 		low_longitude = min(longitude1,longitude2)
 		high_longitude = max(longitude1,longitude2)
-		cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:notminusone.database.windows.net,1433;Database=notminusoneDatabase;Uid=not-1;Pwd={0626Fuyi};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+		cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:2server2.database.windows.net,1433;Database=samp;Uid=admin1;Pwd={wangpeng131488.};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 		cursor = cnxn.cursor()
 		# cursor.execute("select id,latitude,longitude,net,place from nquakes2 where latitude=?",latitude," and longitude=?",longitude)
-		cursor.execute("select id,latitude,longitude,net,place from nquakes2 where latitude between "+str(low_latitude)+" and "+str(high_latitude)+
+		cursor.execute("select id,latitude,longitude,net,place from nquakes1 where latitude between "+str(low_latitude)+" and "+str(high_latitude)+
 		" and longitude between "+str(low_longitude)+" and "+str(high_longitude))
 		row = cursor.fetchall()
 		if row is not None:
@@ -109,7 +109,7 @@ def part13():
 		net = request.form["net"]
 		cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:notminusone.database.windows.net,1433;Database=notminusoneDatabase;Uid=not-1;Pwd={0626Fuyi};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 		cursor = cnxn.cursor()
-		cursor.execute("select top(6)* from nquakes2 where net=? order by time desc ",net)
+		cursor.execute("select top(6)* from nquakes1 where net=? order by time desc ",net)
 		data = cursor.fetchall()
 		if len(data) > 0:
 			return render_template('part13.html',part13_active = "active",title="Part 13",data=data)
@@ -132,9 +132,9 @@ def part13():
 @app.route('/delete',methods=['POST'])
 def delete():
 	quakeid = request.form["quakeid"]
-	cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:notminusone.database.windows.net,1433;Database=notminusoneDatabase;Uid=not-1;Pwd={0626Fuyi};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+	cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:2server2.database.windows.net,1433;Database=samp;Uid=admin1;Pwd={wangpeng131488.};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 	cursor = cnxn.cursor()
-	cursor.execute("delete  from nquakes2 where id=?",quakeid)
+	cursor.execute("delete  from nquakes1 where id=?",quakeid)
 	cursor.commit()
 	return render_template('part13.html',part13_active = "active",title="Part 13",information="Deletion succeeded!")
 
@@ -142,11 +142,11 @@ def delete():
 def edit():
 	quakeid = request.form['quakeid']
 	place = request.form["place"]
-	cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:notminusone.database.windows.net,1433;Database=notminusoneDatabase;Uid=not-1;Pwd={0626Fuyi};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+	cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:2server2.database.windows.net,1433;Database=samp;Uid=admin1;Pwd={wangpeng131488.};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 	cursor = cnxn.cursor()
-	cursor.execute("update nquakes2 set place=? where id=?",place,quakeid)
+	cursor.execute("update nquakes1 set place=? where id=?",place,quakeid)
 	cursor.commit()
-	cursor.execute("select * from nquakes2 where id=?",quakeid)
+	cursor.execute("select * from nquakes1 where id=?",quakeid)
 	row = cursor.fetchone()
 	return render_template('part13.html',part13_active = "active",title="Part 13",information="Modified succeeded!",newdata=row)
 
