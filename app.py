@@ -18,70 +18,137 @@ from PIL import Image
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
-app.config['SECRET_KEY'] = 'wzg'
-
+app.config['SECRET_KEY'] = '0626fuyi'
+server = 'notminusone.database.windows.net'
+database = 'notminusoneDatabase'
+username = 'not-1'
+password = '0626Fuyi' 
+driver= '{ODBC Driver 17 for SQL Server}'
+# 
 # ROUTES!
+
+
 @app.route('/')
 def part10():
-	cnxn = pyodbc.connect('Driver={ODBC Driver 18 for SQL Server};Server=tcp:wzgserver.database.windows.net,1433;Database=wzgdb;Uid=wzg;Pwd={zg123456!};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+	cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:notminusone.database.windows.net,1433;Database=notminusoneDatabase;Uid=not-1;Pwd={0626Fuyi};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 	cursor = cnxn.cursor()
-	cursor.execute("select count(*) as quakes from nquakes")
-	quake = cursor.fetchone() #row[0],
-	cursor.execute("SELECT * from nquakes where mag = (SELECT MAX(mag) from nquakes)")
-	large = cursor.fetchone() #row[0],
-	cursor.execute("SELECT * from nquakes where mag = (SELECT min(mag) from nquakes)")
-	small = cursor.fetchone() #row[0],
-	q=''+str(quake[0])
-	l=''+str(large[7])+'          '+str(large[6])
-	s=''+str(small[7])+'          '+str(small[6])
+	cursor.execute("select count(*) from [dbo].[nquakes2]")
+	row = cursor.fetchval()
+	cursor.execute("select id,place from [dbo].[nquakes2] where mag=(select max(mag) from [dbo].[nquakes2])")
+	row1 = cursor.fetchone()
+	cursor.execute("select id,place from [dbo].[nquakes2] where mag=(select min(mag) from [dbo].[nquakes2])")
+	row2 = cursor.fetchone()
+	return render_template('part10.html',sum=row,part10_active="active",title="Part 10",max={
+		'id':row1[0],
+		'location':row1[1]
+	},min={
+		'id':row2[0],
+		'location':row2[1]
+	})
+	
 
-	return render_template('part10.html',quakes=q,largest=l,smallest=s,part10_active="active",title="Part 10")
-
-@app.route('/part11')
+@app.route('/part11',methods=['GET','POST'])
 def part11():
 	if request.method=='GET':
 		return render_template('part11.html',part11_active = "active",title="Part 11")
 	if request.method=='POST':
-		low = request.form["low"]
-		high = request.form["high"]
-		n = request.form["n"]
-		cnxn = pyodbc.connect('Driver={ODBC Driver 18 for SQL Server};Server=tcp:wzgserver.database.windows.net,1433;Database=wzgdb;Uid=wzg;Pwd={zg123456!};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+		low = float(request.form["low"])
+		high = float(request.form["high"])
+		N = int(request.form["N"])
+		cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:notminusone.database.windows.net,1433;Database=notminusoneDatabase;Uid=not-1;Pwd={0626Fuyi};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 		cursor = cnxn.cursor()
-		dat=[]
-		for i in range(n):
-			high=low+(high-low)/i
-			cursor.execute("select count(*) as quakes from nquakes where mag >=? and mag <?",low,high)
-			r = cursor.fetchone()
-			cursor.execute("select * as quakes from nquakes where mag=(select max(mag) from  nquakes where mag >=? and mag <? ) ",low,high)
+		data = []
+		step = (high-low)/N
+		for i in range(N):
+			cursor.execute("select count(*) from nquakes2 where mag>"+str(low + step * i)+ "and mag<"+ str(low + step * (i + 1)))
+			num = cursor.fetchval()
+			cursor.execute("select max(mag) from nquakes2 where mag>"+str(low + step * i)+ "and mag<"+ str(low + step * (i + 1)))
+			max = cursor.fetchval()
+			cursor.execute("select time,place from nquakes2 where mag=?",max)
 			row = cursor.fetchone()
-			d={
-				'patten':i+1,
-				'quakes':r[0],
-				'time':row[0],
-				'location':row[7]
-			}
-			dat.append(d)
-		
-	return render_template('part11.html',data=dat,part11_active = "active",title="Part 11")
+			data.append({
+				"num":num,
+				"time":row[0],
+				"place":row[1]
+			})
+		if len(data) > 0:
+			return render_template('part11.html',part11_active = "active",title="Part 11",data=data)
+		else:
+			return render_template('part11.html',part11_active = "active",title="Part 11")
 
 @app.route('/part12',methods=['GET','POST'])
 def part12():
 	if request.method=='GET':
 		return render_template('part12.html',part12_active = "active",title="Part 12")
 	if request.method=='POST':
-		name = request.form["name"]
-		cnxn = pyodbc.connect('Driver={ODBC Driver 18 for SQL Server};Server=tcp:wzgserver.database.windows.net,1433;Database=wzgdb;Uid=wzg;Pwd={zg123456!};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+		latitude1 = float(request.form["latitude1"])
+		latitude2 = float(request.form["latitude2"])
+		low_latitude = min(latitude1,latitude2)
+		high_latitude = max(latitude1,latitude2)
+	
+		longitude1 = float(request.form["longitude1"])
+		longitude2 = float(request.form["longitude2"])
+		low_longitude = min(longitude1,longitude2)
+		high_longitude = max(longitude1,longitude2)
+		cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:notminusone.database.windows.net,1433;Database=notminusoneDatabase;Uid=not-1;Pwd={0626Fuyi};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
 		cursor = cnxn.cursor()
-		cursor.execute("select Name,Keywords,Picture from quiz0data where Name=?",name)
-		row = cursor.fetchone()
+		# cursor.execute("select id,latitude,longitude,net,place from nquakes2 where latitude=?",latitude," and longitude=?",longitude)
+		cursor.execute("select id,latitude,longitude,net,place from nquakes2 where latitude between "+str(low_latitude)+" and "+str(high_latitude)+
+		" and longitude between "+str(low_longitude)+" and "+str(high_longitude))
+		row = cursor.fetchall()
 		if row is not None:
-			return render_template('part12.html',part12_active = "active",data = {
-				'name':row[0],
-				'keywords':row[1],
-				'picture':row[2]
-			})
+			return render_template('part12.html',part12_active = "active",data =row)
 		else:
-			return render_template('part12.html',part12_active = "active",information="no information or picture available",title="Part 12")
+			return render_template('part12.html',part12_active = "active",title="Part 12")
+
+@app.route('/part13',methods=['GET','POST'])
+def part13():
+	if request.method=='GET':
+		return render_template('part13.html',part13_active = "active",title="Part 13")
+	if request.method=='POST':
+		net = request.form["net"]
+		cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:notminusone.database.windows.net,1433;Database=notminusoneDatabase;Uid=not-1;Pwd={0626Fuyi};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+		cursor = cnxn.cursor()
+		cursor.execute("select top(6)* from nquakes2 where net=? order by time desc ",net)
+		data = cursor.fetchall()
+		if len(data) > 0:
+			return render_template('part13.html',part13_active = "active",title="Part 13",data=data)
+		else:
+			return render_template('part13.html',part13_active = "active",title="Part 13")
+		
+		# if id =="":
+		# 	cursor.execute("select top(6)* from nquakes2 where net=? order by time desc ",net)
+		# 	data = cursor.fetchall()
+		# 	if len(data) > 0:
+		# 		return render_template('part13.html',part13_active = "active",title="Part 13",data=data)
+		# 	else:
+		# 		return render_template('part13.html',part13_active = "active",title="Part 13")
+		
+		# else:
+		# 	place = request.form["place"]
+		# 	cursor.execute('update nquakes2 set place='+place+" where id="+id)
+		# 	return render_template('part13.html',part13_active = "active",title="Part 13")
+
+@app.route('/delete',methods=['POST'])
+def delete():
+	quakeid = request.form["quakeid"]
+	cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:notminusone.database.windows.net,1433;Database=notminusoneDatabase;Uid=not-1;Pwd={0626Fuyi};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+	cursor = cnxn.cursor()
+	cursor.execute("delete  from nquakes2 where id=?",quakeid)
+	cursor.commit()
+	return render_template('part13.html',part13_active = "active",title="Part 13",information="Deletion succeeded!")
+
+@app.route('/edit',methods=['POST'])
+def edit():
+	quakeid = request.form['quakeid']
+	place = request.form["place"]
+	cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:notminusone.database.windows.net,1433;Database=notminusoneDatabase;Uid=not-1;Pwd={0626Fuyi};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+	cursor = cnxn.cursor()
+	cursor.execute("update nquakes2 set place=? where id=?",place,quakeid)
+	cursor.commit()
+	cursor.execute("select * from nquakes2 where id=?",quakeid)
+	row = cursor.fetchone()
+	return render_template('part13.html',part13_active = "active",title="Part 13",information="Modified succeeded!",newdata=row)
 
 @app.errorhandler(404)
 @app.route("/error404")

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<div
+    style="width: 100%; display: flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+    <form action="part13" method="post" class="form" role="form"
+        style="display: flex; flex-direction:row; width: 60%; margin-bottom: 40px;"> 
+        <input class="form-control" id="net" name="net" placeholder="Input the net value" type="text"
+            value="" style="margin-right: 20px;">
+        <input class="btn btn-primary" id="submit" name="submit" type="submit" value="Search">
+
+    </form>
+    {% if information %}
+    <h2>{{ information }}</h2>
+    {% endif %}
+    {% if newdata %}
+    <h2>After modification</h2><br/>
+    <table class="table table-striped table-bordered table-hover table-condensed" style="width: 60%; margin:auto">
+        <tr>
+            <th>time</th>
+            <th>latitude</th>
+            <th>longitude</th>
+            <th>depth</th>
+            <th>mag</th>
+            <th>net</th>
+            <th>id</th>
+            <th>place</th>
+        </tr>
+        <tr>
+            <td>{{ newdata[0]}}</td>
+            <td>{{ newdata[1] }}</td>
+            <td>{{ newdata[2] }}</td>
+            <td>{{ newdata[3] }}</td>
+            <td>{{ newdata[4] }}</td>
+            <td>{{ newdata[5] }}</td>
+            <td>{{ newdata[6] }}</td>
+            <td>{{ newdata[7] }}</td>
+        </tr>
+    </table>
+    {% endif %}
+
+    {% if data %}
+    <table class="table table-striped table-bordered table-hover table-condensed" style="width: 90%; margin:auto">
+        <tr>
+            <th>time</th>
+            <th>latitude</th>
+            <th>longitude</th>
+            <th>depth</th>
+            <th>mag</th>
+            <th>net</th>
+            <th>id</th>
+            <th>place</th>
+            <th>operation</th>
+        </tr>
+        {% for row in data %}
+        <tr>
+            <td>{{ row[0]}}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+            <td>{{ row[5] }}</td>
+            <td>{{ row[6] }}</td>
+            <td>{{ row[7] }}</td>
+            <td>
+                <div style="display: flex; flex-direction:row;">
+                <form action="edit" method="post" class="form" role="form"
+                style="display: flex; flex-direction:row;"> 
+                <input class="form-control" id="quakeid" name="quakeid"  type="hidden"
+                        value={{row[6]}} >
+                <input class="form-control" id="place" name="place" placeholder="Input new location" type="text"
+                        value="" style="margin-right: 5px;width: 140px;">
+                <input class="btn btn-primary" id="submit" name="submit" type="submit" style="margin-right: 10px;" value="modify">
+                </form>
+                <form action="delete" method="post" class="form" role="form"
+                style="display: flex; flex-direction:row;"> 
+                <input class="form-control" id="quakeid" name="quakeid"  type="hidden"
+                        value={{row[6]}} >
+                <input class="btn btn-primary" id="submit" name="submit" type="submit" value="delete">
+                </form>
+            </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+{% endblock %}
+<script type="text/javascript">
+   
+</script>

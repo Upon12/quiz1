@@ -2,14 +2,10 @@
 
 {% block app_content %}
 <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-    <!-- <img style="height: 500px; width: 500px" src="https://wzgaccount.blob.core.windows.net/quiz0/curly.png" /> -->
-    <div>
-        <b>quakes:</b>{{quakes}}
-        <br>
-        <b>largest:</b>{{largest}}
-        <br>
-        <b>smallest :</b>{{smallest }}
-    </div>
+    <h4>The sum of quake :{{sum}}</h4>
+    <br/>
+    <h4>The id of maximum is {{max.id}}, The location is {{max.location}}</h4>
+    <br/>
+    <h4>The id of minimum is {{min.id}}, The location is {{min.location}}</h4>
 </div>
-
 {% endblock %}
